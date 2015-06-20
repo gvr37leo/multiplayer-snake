@@ -16,6 +16,9 @@
 	</style>
 </head>
 <body>
+	<CANVAS WIDTH="500" HEIGHT="400" ID="mycanvas" tabindex="0" style="border-style: solid">
+			Canvas tag not supported
+		</CANVAS>
 	<div id="nickWrap">
 		<p>Enter a username</p>
 		<p id="nickError"></p>
@@ -38,8 +41,58 @@
 	
 	<script src="http://code.jquery.com/jquery-latest.min.js"></script>
 	<script src="/socket.io/socket.io.js"></script>
+	<script>
+		var socket = io.connect();
+		var canvas = document.getElementById("mycanvas");
+		canvas.addEventListener('keydown', doKeyDown, true);
+
+		canvas_context = canvas.getContext("2d");
+
+		var x = 100;
+		var y = 100;
+
+		canvas_context.fillRect(x, y, 50, 30);
+
+		function doKeyDown(e){
+			if (e.keyCode == 87) {
+				clearCanvas();
+				y = y - 10;
+				canvas_context.fillRect(x, y, 50, 30);
+			}
+			if (e.keyCode == 83) {
+				clearCanvas();
+				y = y + 10;
+				canvas_context.fillRect(x, y, 50, 30);
+			}
+			if (e.keyCode == 65) {
+				clearCanvas();
+				x = x - 10;
+				canvas_context.fillRect(x, y, 50, 30);
+			}
+			if (e.keyCode == 68) {
+				clearCanvas();
+				x = x + 10;
+				canvas_context.fillRect(x, y, 50, 30);
+			}
+
+			socket.emit("newPosition",{x:x,y:y});
+
+		}
+
+		function clearCanvas() {
+			canvas.width = canvas.width;
+		}
+
+		socket.on("positionUpdate",function(data){
+			x = data.x;
+			y = data.y;
+			canvas_context.fillRect(x, y, 50, 30);
+		});
+
+
+	</script>
 	<script type="text/javascript">
-		jQuery(function($){
+		$(document).ready(function(){
 			var socket = io.connect();
 			var $nickForm = $("#setNick");
 			var $nickError = $("#nickError");
@@ -82,5 +135,6 @@
 			});
 		});
 	</script>
+	
 </body>
 </html>
