@@ -1,6 +1,7 @@
 <html>
 <head>
 	<title></title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 	<style type="text/css">
 		#chat{
 			height: 500px;
@@ -9,35 +10,43 @@
 		#contentWrap{
 			display: none;
 		}
-		#chatWrap{
-			float: left;
+		#users{
+			border: 1px solid black;
+		}
+		canvas{
 			border: 1px solid black;
 		}
 	</style>
 </head>
 <body>
-	<CANVAS WIDTH="500" HEIGHT="400" ID="mycanvas" tabindex="0" style="border-style: solid">
-			Canvas tag not supported
-		</CANVAS>
-	<div id="nickWrap">
-		<p>Enter a username</p>
-		<p id="nickError"></p>
-		<form id="setNick">
-			<input size="35" id="nickname">
-			<input type="submit">
-		</form>
-	</div>
-	<div id="contentWrap">
-		<div id="chatWrap">
-			<div id="chat"></div>
-			<form id="send-message">
-					<input size="35" id="message">
+	<div class="row">
+		<div class="col-md-6">
+			<canvas width="500" height="500" ID="mycanvas" tabindex="0" >Canvas tag not supported</canvas>
+		</div>
+		<div class="col-md-6">
+			<div id="nickWrap">
+				<p>Enter a username</p>
+				<p id="nickError"></p>
+				<form id="setNick">
+					<input id="nickname">
 					<input type="submit">
-			</form>
+				</form>
+			</div>
 		</div>
-		<div id="users">
+		<div class="col-md-6" id="contentWrap">
+			<div class="row">
+				<div id="chatWrap" class="col-md-10">
+					<div id="chat"></div>
+					<form id="send-message">
+							<input id="message">
+							<input type="submit">
+					</form>
+				</div>
+				<div id="users" class="col-md-2"></div>
+			</div>
 		</div>
 	</div>
+	
 	
 	<script src="http://code.jquery.com/jquery-latest.min.js"></script>
 	<script src="/socket.io/socket.io.js"></script>
@@ -48,93 +57,33 @@
 
 		canvas_context = canvas.getContext("2d");
 
-		var x = 100;
-		var y = 100;
-
-		canvas_context.fillRect(x, y, 50, 30);
-
 		function doKeyDown(e){
 			if (e.keyCode == 87) {
-				clearCanvas();
-				y = y - 10;
-				canvas_context.fillRect(x, y, 50, 30);
+				socket.emit("move",{"socketID":socket.id,"direction":"up"});
 			}
 			if (e.keyCode == 83) {
-				clearCanvas();
-				y = y + 10;
-				canvas_context.fillRect(x, y, 50, 30);
+				socket.emit("move",{"socketID":socket.id,"direction":"down"});
 			}
 			if (e.keyCode == 65) {
-				clearCanvas();
-				x = x - 10;
-				canvas_context.fillRect(x, y, 50, 30);
+				socket.emit("move",{"socketID":socket.id,"direction":"left"});
 			}
 			if (e.keyCode == 68) {
-				clearCanvas();
-				x = x + 10;
-				canvas_context.fillRect(x, y, 50, 30);
+				socket.emit("move",{"socketID":socket.id,"direction":"right"});
 			}
-
-			socket.emit("newPosition",{x:x,y:y});
-
 		}
+
+		socket.on("move",function(data){
+			clearCanvas();
+			for(var i = 0; i < data.length; i++){
+				canvas_context.fillRect(data[i].x, data[i].y, 50, 50);
+			}
+		});
 
 		function clearCanvas() {
 			canvas.width = canvas.width;
 		}
-
-		socket.on("positionUpdate",function(data){
-			x = data.x;
-			y = data.y;
-			canvas_context.fillRect(x, y, 50, 30);
-		});
-
-
 	</script>
-	<script type="text/javascript">
-		$(document).ready(function(){
-			var socket = io.connect();
-			var $nickForm = $("#setNick");
-			var $nickError = $("#nickError");
-			var $nickBox = $("#nickname");
-			var $users = $("#users");
-
-			var $messageForm = $("#send-message");
-			var $messageBox = $("#message");
-			var $chat = $("#chat");
-
-			$nickForm.submit(function(e){
-				e.preventDefault();
-				socket.emit("new user",$nickBox.val(),function(data){
-					if(data){
-						$("#nickWrap").hide();
-						$("#contentWrap").show();
-					}else{
-						$nickError.html("That username is already taken");
-					}
-				});
-				$nickBox.val("");
-			});
-
-			$messageForm.submit(function(e){
-				e.preventDefault();
-				socket.emit("send-message",$messageBox.val());
-				$messageBox.val("");
-			});
-
-			socket.on("new message",function(data){
-				$chat.append(data + "<br/>");
-			});
-
-			socket.on("usernames",function(data){
-				var html = "";
-				for(var i=0;i<data.length;i++){
-					html += data[i] + "<br/>"
-				}
-				$users.html(html);
-			});
-		});
-	</script>
+	<script src="chat.js"></script>
 	
 </body>
 </html>
