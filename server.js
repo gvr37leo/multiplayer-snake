@@ -61,12 +61,6 @@ io.sockets.on("connection",function(socket){
 	})
 
 	socket.on("disconnect",function(data){
-		if(!socket.nickname){
-			return;
-		}
-		nicknames.splice(nicknames.indexOf(socket.nickname),1);
-		io.sockets.emit("usernames",nicknames);
-
 		for(var i = 0; i<players.length;i++){
 			if(players[i].id == socket.id){
 				players.splice(i,1);
@@ -74,6 +68,13 @@ io.sockets.on("connection",function(socket){
 		}
 		io.sockets.emit("move",players);
 		console.log("a client has disconnected: " + socket.id);
+		if(!socket.nickname){
+			return;
+		}
+		nicknames.splice(nicknames.indexOf(socket.nickname),1);
+		io.sockets.emit("usernames",nicknames);
+
+		
 	});
 
 });
