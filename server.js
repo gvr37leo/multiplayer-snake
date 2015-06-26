@@ -11,7 +11,6 @@ app.get('/',function(req,res){
 
 var players = [];
 
-
 io.sockets.on("connection",function(socket){
 
 	console.log("a client has connected: " + socket.id);
