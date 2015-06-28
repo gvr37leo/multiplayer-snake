@@ -16,6 +16,9 @@
 		canvas{
 			border: 1px solid black;
 		}
+		.row {
+			margin: 0; padding: 0;
+		}
 	</style>
 </head>
 <body>
@@ -47,9 +50,11 @@
 		</div>
 	</div>
 	
-	
 	<script src="http://code.jquery.com/jquery-latest.min.js"></script>
 	<script src="/socket.io/socket.io.js"></script>
+	<script type="text/javascript">
+		$("#chat").scrollTop($("#chat")[0].scrollHeight);
+	</script>
 	<script>
 		var socket = io.connect();
 		var canvas = document.getElementById("mycanvas");
