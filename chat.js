@@ -8,6 +8,7 @@ $(document).ready(function(){
 	var $messageForm = $("#send-message");
 	var $messageBox = $("#message");
 	var $chat = $("#chat");
+	var elem = document.getElementById('chat');
 
 	$nickForm.submit(function(e){
 		e.preventDefault();
@@ -30,6 +31,7 @@ $(document).ready(function(){
 
 	socket.on("new message",function(data){
 		$chat.append(data + "<br/>");
+  		elem.scrollTop = elem.scrollHeight;
 	});
 
 	socket.on("usernames",function(data){
