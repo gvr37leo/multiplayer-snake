@@ -14,7 +14,7 @@ io.sockets.on("connection",function(socket){
 	console.log("a client has connected: " + socket.id);
 
 
-
+    // temporary emit example
 	socket.on("send-message",function(data){
 		io.sockets.emit("new message",socket.nickname + ":" + data);
 	})
