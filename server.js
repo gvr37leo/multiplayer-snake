@@ -27,14 +27,15 @@ io.sockets.on("connection",function(socket){
 
 	//data contains direction and clientid
 	socket.on("move",function(data){
+        var player = getPlayerByID(data.socketID)
 		if(data.direction == "up"){
-			getPlayerByID(data.socketID).y -= 10;
+			player.y -= 10;
 		} else if(data.direction == "down"){
-			getPlayerByID(data.socketID).y += 10;
+			player.y += 10;
 		} else if(data.direction == "left"){
-			getPlayerByID(data.socketID).x -= 10;
+			player.x -= 10;
 		} else if(data.direction == "right"){
-			getPlayerByID(data.socketID).x += 10;
+			player.x += 10;
 		} 
 
 		io.sockets.emit("move",players);
