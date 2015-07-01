@@ -53,14 +53,19 @@ io.sockets.on("connection",function(socket){
 	});
 
     socket.on("disconnect",function(){
-
+        console.log("a client has disconnected: " + socket.id);
+        for(var i = 0; i<snakes.length;i++){
+            if(snakes[i].id == socket.id){
+                snakes.splice(i,1);
+            }
+        }
     });
-
-    setInterval(function(){
-        updateSnakes();
-        io.sockets.emit("update",{snakes:snakes,candy:candy});
-    },200);
 });
+
+setInterval(function(){
+    updateSnakes();
+    io.sockets.emit("update",{snakes:snakes,candy:candy});
+},200);
 
 function updateSnakes(){
    snakes.forEach(function(snake){

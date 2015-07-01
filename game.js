@@ -20,7 +20,7 @@ $(document).ready(function(){
 
     socket.on("update",function(data){
         clearCanvas();
-        for(var i = 0; i < data.length;i++) {
+        for(var i = 0; i < data.snakes.length;i++) {
             drawSnake(data.snakes[i]);
         }
         drawCandy(data.candy);
