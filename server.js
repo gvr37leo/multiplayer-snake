@@ -1,16 +1,26 @@
 var express = require("express"),
 app = express(),
 server = require("http").createServer(app),
-io = require("socket.io").listen(server),
+io = require("socket.io").listen(server);
 server.listen(8000);
 app.use(express.static(__dirname + '/'));
 app.get('/',function(req,res){
 	res.sendfile(__dirname + "/index.html");
 });
-var snakes = [];
 
+var fieldWidth = 10;
+var fieldHeight = 10;
+
+var snakes = [];
+var candy ={
+    x:Math.floor(Math.random() * fieldWidth),
+    y:Math.floor(Math.random() * fieldHeight)
+};
 
 io.sockets.on("connection",function(socket){
+
+    io.sockets.emit("init",{fieldWidth:fieldWidth,fieldHeight:fieldHeight});
+
     snakes.push({
         id: socket.id,
 		x: 5,
@@ -20,23 +30,12 @@ io.sockets.on("connection",function(socket){
 		length: 0,
         highscore: 0,
 		bodyParts:[],
-        directionChanged: false,
-		drawSnake: function(){
-            ctxt.fillStyle = 'rgb(0,0,0)';
-			ctxt.fillRect(this.x * blockWidth,this.y * blockHeight,Math.ceil(blockWidth),Math.ceil(blockHeight));
-            ctxt.fillStyle = 'rgb(0,0,0)';
-			for (var i = 0; i < this.bodyParts.length; i++) {
-                var color = Math.ceil((i / this.bodyParts.length) * 255);
-                ctxt.fillStyle = 'rgb(' + color + ',' + color + ',' + color + ')';
-				ctxt.fillRect(this.bodyParts[i].x * blockWidth,this.bodyParts[i].y * blockHeight,Math.ceil(blockWidth),Math.ceil(blockHeight));
-                ctxt.fillStyle = 'rgb(0,0,0)';
-			}         
-		}
+        directionChanged: false
 	});
 	console.log("a client has connected: " + socket.id);
     
-    socket.on("move",function(data){
-        snake = getSnakeByID(socket.id);
+    socket.on("update",function(data){
+        var snake = getSnakeByID(socket.id);
 		if(data.direction == "up"){
 			snake.vx = 0;
             snake.vy = -1;
@@ -52,10 +51,14 @@ io.sockets.on("connection",function(socket){
 		}
         snake.directionChanged = true;
 	});
-    
+
+    socket.on("disconnect",function(){
+
+    });
+
     setInterval(function(){
-        updateSnake();
-        io.sockets.emit("update",1);
+        updateSnakes();
+        io.sockets.emit("update",{snakes:snakes,candy:candy});
     },200);
 });
 
@@ -69,9 +72,8 @@ function updateSnakes(){
                 y:snake.y
             }
         );
-        
-        for(var i = snake.bodyParts.length - 1;i >= 0 ;i--){
-            
+
+       for(var i = snake.bodyParts.length - 1;i >= 0 ;i--){
             snake.bodyParts[i].age ++;
             if(snake.bodyParts[i].age > snake.length){
                 snake.bodyParts.splice(i,1);
@@ -94,9 +96,7 @@ function updateSnakes(){
 		}
        if(snake.x == candy.x && snake.y == candy.y){
             snake.length ++;
-            if(snake.length == 10){
-                sound.fadeIn(1,2000);
-            }
+
             if(snake.length > snake.highscore){
                 snake.highscore = snake.length;
             }
@@ -111,7 +111,6 @@ function updateSnakes(){
                 snake.vx = 1;
                 snake.vy = 0;
                 snake.length = 0;
-                sound.fadeOut(0,1000);
             }    
         }
         snake.directionChanged = false;
