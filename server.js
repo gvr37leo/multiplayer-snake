@@ -33,33 +33,6 @@ io.sockets.on("connection",function(socket){
         directionChanged: false
 	});
 	console.log("a client has connected: " + socket.id);
-<<<<<<< HEAD
-
-	players.push(
-		{
-			"id": socket.id,
-			"x":100,
-			"y":100,
-		}
-	);
-
-	io.sockets.emit("move",players);
-
-	//data contains direction and clientid
-	socket.on("move",function(data){
-        var player = getPlayerByID(data.socketID)
-		if(data.direction == "up"){
-			player.y -= 10;
-		} else if(data.direction == "down"){
-			player.y += 10;
-		} else if(data.direction == "left"){
-			player.x -= 10;
-		} else if(data.direction == "right"){
-			player.x += 10;
-		} 
-
-		io.sockets.emit("move",players);
-=======
     
     socket.on("update",function(data){
         var snake = getSnakeByID(socket.id);
@@ -77,9 +50,7 @@ io.sockets.on("connection",function(socket){
             snake.vy = 0;
 		}
         snake.directionChanged = true;
->>>>>>> Snake
 	});
-
     socket.on("disconnect",function(){
         console.log("a client has disconnected: " + socket.id);
         for(var i = 0; i<snakes.length;i++){
