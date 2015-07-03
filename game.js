@@ -42,16 +42,16 @@ $(document).ready(function(){
     });
 
     function doKeyDown(e){
-        if (e.keyCode == 87) {
+        if (e.keyCode == 87 || e.keyCode == 38) {
             socket.emit("update",{"socketID":socket.id,"direction":"up"});
         }
-        if (e.keyCode == 83) {
+        if (e.keyCode == 83 || e.keyCode == 40) {
             socket.emit("update",{"socketID":socket.id,"direction":"down"});
         }
-        if (e.keyCode == 65) {
+        if (e.keyCode == 65 || e.keyCode == 37) {
             socket.emit("update",{"socketID":socket.id,"direction":"left"});
         }
-        if (e.keyCode == 68) {
+        if (e.keyCode == 68 || e.keyCode == 39) {
             socket.emit("update",{"socketID":socket.id,"direction":"right"});
         }
     }
