@@ -36,16 +36,16 @@ io.sockets.on("connection",function(socket){
     
     socket.on("update",function(data){
         var snake = getSnakeByID(socket.id);
-		if(data.direction == "up"){
+		if(data.direction == "up" && snake.vy != 1){
 			snake.vx = 0;
             snake.vy = -1;
-		} else if(data.direction == "down"){
+		} else if(data.direction == "down" && snake.vy != -1){
 			snake.vx = 0;
             snake.vy = 1;
-		} else if(data.direction == "left"){
+		} else if(data.direction == "left" && snake.vx != 1){
 			snake.vx = -1;
             snake.vy = 0;
-		} else if(data.direction == "right"){
+		} else if(data.direction == "right" && snake.vx != -1){
             snake.vx = 1;
             snake.vy = 0;
 		}

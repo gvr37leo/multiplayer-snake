@@ -26,31 +26,10 @@
 		<div class="col-md-6">
 			<canvas width="500" height="500" ID="mycanvas" tabindex="0" >Canvas tag not supported</canvas>
 		</div>
-		<div class="col-md-6">
-			<div id="nickWrap">
-				<p>Enter a username</p>
-				<p id="nickError"></p>
-				<form id="setNick">
-					<input id="nickname">
-					<input type="submit">
-				</form>
-			</div>
-		</div>
-		<div class="col-md-6" id="contentWrap">
-			<div class="row">
-				<div id="chatWrap" class="col-md-10">
-					<div id="chat" style ="overflow:auto"></div>
-					<form id="send-message">
-							<input id="message">
-							<input type="submit">
-					</form>
-				</div>
-				<div id="users" class="col-md-2"></div>
-			</div>
-		</div>
 	</div>
 	
 	<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/howler/1.1.26/howler.min.js"></script>
 	<script src="/socket.io/socket.io.js"></script>
 	<script src="game.js"></script>
 	<script src="chat.js"></script>
